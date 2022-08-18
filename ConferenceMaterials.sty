@@ -1,0 +1,235 @@
+% Written by Ross Paterson, who claims no responsibility for failure
+% -------------------------------------------------------------
+% From here is code for the conference booklet production
+% 
+% -------------------------------------------------------------
+% Necessary counters for program
+
+\newcounter{numparallelsessions}
+\newcounter{totalwidth}
+\newcounter{totalcols}
+\def\hostlogo{}
+\def\funderlogos{}
+\def\organisers{}
+
+% -------------------------------------------------------------
+% Titlepage setup
+
+\renewcommand\maketitle{
+\newgeometry{bindingoffset=0mm,inner=15mm, outer=15mm, top=20mm, bottom=20mm}
+\hypersetup{pageanchor=false}
+
+\begin{titlepage}
+    \null\vfil
+    \vskip 20\p@
+    \vfill
+    \begin{center}
+    {
+      {\rule{\textwidth}{2pt}}
+      \huge\bfseries \@title\\
+      Conference Booklet\\
+      {\rule{\textwidth}{2pt}}
+    }
+    \vskip 4em
+    \hostlogo
+    \vfill
+    {
+      \Large
+      \begin{tabular}{c}
+        Organisers:\\[0em]
+        \bfseries \organisers
+      \end{tabular}
+    }
+    \\\vfill
+    Supported by:\\
+    \funderlogos
+    \end{center}\par
+    \vfil\null
+\end{titlepage}
+\hypersetup{pageanchor=true}
+}
+
+
+% -------------------------------------------------------------
+% DATA LOADING
+% newspeaker commands setup
+\newcommand{\newspeaker}[7]{
+    % 7 arguments:
+    %     #1 = key (the name of the function to be called to recover the data will be data_#1)
+    %     #2 = forename
+    %     #3 = surname
+    %     #4 = institution
+    %     #5 = email address
+    %     #6 = title
+    %     #7 = abstract
+    \expandafter\newcommand\csname data_#1\endcsname[1]{
+        \ifthenelse{\equal{##1}{name}}{
+            #2 #3
+        }{}
+        \ifthenelse{\equal{##1}{institution}}{
+            #4
+        }{}
+        \ifthenelse{\equal{##1}{email}}{
+            #5
+        }{}
+        \ifthenelse{\equal{##1}{title}}{
+            #6
+        }{}
+        \ifthenelse{\equal{##1}{abstract}}{
+            #7
+        }{}
+    }
+}
+
+\newcommand{\newparticipant}[5]{
+    % 5 arguments:
+    %     #1 = key (the name of the function to be called to recover the data will be participant_#1)
+    %     #2 = forename
+    %     #3 = surname
+    %     #4 = institution
+    %     #5 = email address
+    \expandafter\newcommand\csname data_#1\endcsname[1]{
+        \ifthenelse{\equal{##1}{name}}{
+            #2 #3
+        }{}
+        \ifthenelse{\equal{##1}{institution}}{
+            #4
+        }{}
+        \ifthenelse{\equal{##1}{email}}{
+            #5
+        }{}
+    }
+}
+
+
+
+
+
+% -------------------------------------------------------------
+% Schedule tables setup
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+% The environment used for a day schedule
+\newenvironment{scheduleday}[2]{
+    \def\numparallelsessions{#1}
+    \setcounter{totalcols}{#1}
+    \stepcounter{totalcols}
+    \begin{table}[ht]
+    \begin{tabular}{#2}
+    \hline
+}{
+    \end{tabular}
+    \end{table}
+}
+
+
+% Timetable conference break row
+\newcommand{\BreakInSchedule}[2]{\rowcolor{gray!25} #1 & \multicolumn{\numparallelsessions}{c|}{\bfseries #2} \\ \hline }
+
+% %for parallel sessions
+% \newcommand{\PairedScheduledTalk}[5]{
+%     #1&
+%     \hypertarget{#2 listing}{\hyperlink{#2 desc}{#2}}\newline\textit{#3}&
+%     \hypertarget{#4 listing}{\hyperlink{#4 desc}{#4}}\newline\textit{#5}
+%     \\\hline}
+
+\newcommand{\paralleltalks}[2]{
+    #1&
+    \hypertarget{#2 sched}
+                {\hyperlink{#2 titleabs}{\csname data_#2\endcsname{name}}}
+    \newline\textit{\csname data_#2\endcsname{title}}
+    \checknexttalk
+}
+
+\newcommand{\donexttalk}[1]{
+    & \hypertarget{#1 sched}{\hyperlink{#1 titleabs}{\csname data_#1\endcsname{name}}}\newline\textit{\csname data_#1\endcsname{title}}
+    \checknexttalk
+}
+
+\newcommand{\checknexttalk}{\@ifnextchar\bgroup{\donexttalk}{\\\hline}}
+
+
+
+%For a plenary talk
+\newcommand{\plenarytalk}[3]{
+#2&\multicolumn{\numparallelsessions}{#1}{Plenary:
+\hypertarget{#3 sched}{\hyperlink{#3 titleabs}{\csname data_#3\endcsname{name}}}
+\newline\ \textit{\csname data_#3\endcsname{title}}}\\
+\hline
+}
+
+
+%For a plenary-type session
+\newcommand{\crosssession}[3]{
+#2&\multicolumn{\numparallelsessions}{#1}{#3}\\
+\hline
+}
+
+
+\newcommand{\dayrow}[1]{\rowcolor{gray!25}\multicolumn{\value{totalcols}}{|C{14.4cm}|}{\textit{#1}}\\\hline}
+
+% -------------------------------------------------------------
+% Titles and abstract setup
+
+\newcommand{\abstractlist}[1]{
+        \titleabstract{#1}
+        \checknextabs
+}
+
+\newcommand{\checknextabs}{\@ifnextchar\bgroup{\abstractlist}{}}
+
+\newcommand{\titleabstract}[1]{
+        \phantom{}\newline
+        \begin{center}
+            \phantom{}
+            \hypertarget{#1 titleabs}{
+                \hyperlink{#1 sched}{
+                    {\Large\texttt{\csname data_#1\endcsname{name}}}
+                }
+            }
+
+            \textit{\csname data_#1\endcsname{title}}
+        \end{center}
+        \texttt{Abstract:}\csname data_#1\endcsname{abstract}
+}
+
+% -------------------------------------------------------------
+% participant list
+
+
+\newcommand{\participant}[1]{
+    \\\csname data_#1\endcsname{name}
+    &\csname data_#1\endcsname{email}
+    &\csname data_#1\endcsname{institution}
+}
+
+
+\newenvironment{participantlist}[3]{
+    \begin{longtable}{p{#1}p{#2}p{#3}}
+    \ \textbf{Participant Name} & \quad \textbf{Email Address}& \ \ \textbf{Institution} 
+}{
+    \end{longtable}
+}
+
+
+% -------------------------------------------------------------
+% From here is the code for namebadge production
+% -------------------------------------------------------------
+\renewcommand{\ticketdefault}{%
+    \put( 5, 13){\line(1,0){70}}
+    \put( 7, 10){\scriptsize Young Researchers in Algebraic Number Theory}
+    \put( 7,  7){\scriptsize University of Glasgow}
+    \put( 7,  4){\scriptsize August 23 -- 25 2022}
+    \put(70,  3){\includegraphics[width=6mm]{img/glasgow_logo.png}}
+    \put(67, 15){\includegraphics[width=11mm]{img/GMJT_logo.jpg}}
+    \put(67, 23){\includegraphics[width=11mm]{img/Heilbronn_logo.png}}
+    \put(67, 29){\includegraphics[width=11mm]{img/EPSRC_logo.png}}
+    \put(67, 34){\includegraphics[width=11mm]{img/LMS_logo.png}}
+}
+% now what do you like to put in your ticket
+\newcommand{\badge}[1]{\ticket{%
+    \put(25, 30){\makebox(20,10){\bfseries\Large \csname data_#1\endcsname{name}}}
+    \put(25, 22){\makebox(20,10){\parbox{50mm}{\centering\csname data_#1\endcsname{institution}}}}
+    %\shortstack{#2}}}%
+}}
+
+\ticketSize{80}{40}
