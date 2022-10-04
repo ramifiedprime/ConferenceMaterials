@@ -1,0 +1,42 @@
+\documentclass{ConferenceMaterials}
+\usepackage{lipsum}
+\usepackage{mwe}
+
+\title{My Conference}
+\def\organisers{
+    Organiser 1 \& Organiser 2
+}
+\def\hostlogo{
+    \includegraphics[width=8cm]{example-image}
+}
+\def\funderlogos{
+    \includegraphics[width=2cm]{example-image-a}\\
+    \includegraphics[width=2cm]{example-image-b}
+    \includegraphics[width=2cm]{example-image-c}
+}
+
+\input{participants}
+
+\begin{document}
+\maketitle
+
+\section*{Conference Schedule}
+
+\begin{scheduleday}{2}{|C{3cm}|C{5cm}|C{5cm}|}
+    \dayrow{Day One}
+    \BreakInSchedule{09:00 -- 10:00}{Registration}
+    \plenarytalk{C{10cm}|}{10:30 -- 11:30}{PlenarySpeaker}
+    \BreakInSchedule{11:30 -- 12:00}{Coffee Break}
+    \paralleltalks{12:00 -- 12:30}{SpeakerOne}{SpeakerTwo}
+\end{scheduleday}
+\newpage
+
+\section*{Titles and Abstracts}
+\titleabstract{PlenarySpeaker}{SpeakerOne}{SpeakerTwo}
+
+
+\section*{Participant list}
+\begin{participantlist}{4.5cm}{6cm}{7.7cm}
+    \input{participantlist}
+\end{participantlist}
+\end{document}
