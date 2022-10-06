@@ -1,17 +1,16 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ConferenceMaterials}[A conference materials superclass.]
+\ProvidesClass{ConferenceBooklet}[A conference materials superclass.]
 \LoadClass[]{amsart}
 \RequirePackage[table]{xcolor}
 \RequirePackage{array}
 \usepackage{geometry}
 \geometry{
     a4paper,
-    total={170mm,257mm},
     left=20mm,
+    right=10mm,
     top=20mm,
 }
 
-\RequirePackage[freepin, crossmark]{ticket}
 \RequirePackage{amsthm}
 \RequirePackage{amsmath}
 \RequirePackage{makecell}
@@ -20,8 +19,8 @@
 \RequirePackage[]{hyperref}
 \RequirePackage{environ}
 \RequirePackage{ifthen}
-\RequirePackage{ConferenceMaterials}
-
+\RequirePackage{etoolbox}
+\RequirePackage{ConferenceBooklet}
 
 % ---------------------------------------------------------------------------
 % \DeclareOption{OPTION}{
