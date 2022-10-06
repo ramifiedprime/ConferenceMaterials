@@ -27,10 +27,11 @@
 
 % now what do you like to put in your ticket
 \newcommand{\nametag}[1]{\ticket{%
-    \put(30, 30){\makebox(20,10){\centering\bfseries\Large \csname @participant_#1\endcsname{name}}}
-    \put(30, 22){\makebox(20,10){\parbox{60mm}{\centering\csname @participant_#1\endcsname{institution}}}}
-    %\shortstack{#2}}}%
-}}%\csname @participant_#1\endcsname
+    \put(30, 30){\makebox(22,10){\parbox{60mm}{\centering\bfseries\Large
+    \csname @participant_#1\endcsname{name}}}}
+    \put(30, 22){\makebox(20,10){\parbox{60mm}{\centering
+    \csname @participant_#1\endcsname{institution}}}}
+}}%
 
 \ticketSize{80}{40}
 % ---------------------------------------------------------------------------
