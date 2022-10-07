@@ -64,29 +64,29 @@
 
 % -------------------------------------------------------------
 % DATA LOADING
-\newcommand{\newparticipant}[5]{
+\newcommand{\newparticipant}[5]{%
     % 5 arguments:
     %     #1 = key (the name of the function to be called to recover the data will be participant_#1)
     %     #2 = forename
     %     #3 = surname
     %     #4 = institution
     %     #5 = email address
-    \expandafter\newcommand\csname @participant_#1\endcsname[1]{
-        \ifthenelse{\equal{##1}{name}}{
-            #2 #3
-        }{}
-        \ifthenelse{\equal{##1}{institution}}{
-            #4
-        }{}
-        \ifthenelse{\equal{##1}{email}}{
-            #5
-        }{}
-    }
-}
-
-
-
-\newcommand{\newspeaker}[7]{
+    \expandafter\newcommand\csname @participant_#1\endcsname[1]{%
+        \ifthenelse{\equal{##1}{name}}{%
+            \ignorespaces#2 #3%
+        }{}%
+        \ifthenelse{\equal{##1}{institution}}{%
+            \ignorespaces#4%
+        }{}%
+        \ifthenelse{\equal{##1}{email}}{%
+            \ignorespaces#5%
+        }{}%
+    }%
+}%
+%
+%
+%
+\newcommand{\newspeaker}[7]{%
     % 7 arguments:
     %     #1 = key (the name of the function to be called to recover the data will be @participant_#1)
     %     #2 = forename
@@ -95,24 +95,24 @@
     %     #5 = email address
     %     #6 = title
     %     #7 = abstract
-    \expandafter\newcommand\csname @participant_#1\endcsname[1]{
-        \ifthenelse{\equal{##1}{name}}{
-            #2 #3
-        }{}
-        \ifthenelse{\equal{##1}{institution}}{
-            #4
-        }{}
-        \ifthenelse{\equal{##1}{email}}{
-            #5
-        }{}
-        \ifthenelse{\equal{##1}{title}}{
-            #6
-        }{}
-        \ifthenelse{\equal{##1}{abstract}}{
-            #7
-        }{}
-    }
-}
+    \expandafter\newcommand\csname @participant_#1\endcsname[1]{%
+        \ifthenelse{\equal{##1}{name}}{%
+            \ignorespaces#2 #3%
+        }{}%
+        \ifthenelse{\equal{##1}{institution}}{%
+            \ignorespaces#4%
+        }{}%
+        \ifthenelse{\equal{##1}{email}}{%
+            \ignorespaces#5%
+        }{}%
+        \ifthenelse{\equal{##1}{title}}{%
+            \ignorespaces#6%
+        }{}%
+        \ifthenelse{\equal{##1}{abstract}}{%
+            \ignorespaces#7%
+        }{}%
+    }%
+}%
 
 
 
@@ -136,20 +136,19 @@
 
 
 % Timetable conference break row
-\newcommand{\BreakInSchedule}[2]{\rowcolor{gray!25} #1 & \multicolumn{\numparallelsessions}{c|}{\bfseries #2} \\ \hline }
+\newcommand{\BreakInSchedule}[2]{\rowcolor{gray!25}#1&\multicolumn{\numparallelsessions}{c|}{\bfseries #2}\\\hline}
 
 \newcommand{\paralleltalks}[2]{
-    #1&
-    \hypertarget{#2 sched}
+    #1&\ignorespaces\hypertarget{#2 sched}%
                 {\hyperlink{#2 titleabs}{\csname @participant_#2\endcsname{name}}}
-    \newline\hspace{-22pt}\textit{\csname @participant_#2\endcsname{title}}
+    \newline\textit{\csname @participant_#2\endcsname{title}}
     \checknexttalk
 }
 
 \newcommand{\donexttalk}[1]{
-    & \hypertarget{#1 sched}
+    &\ignorespaces\hypertarget{#1 sched}
                   {\hyperlink{#1 titleabs}{\csname @participant_#1\endcsname{name}}}
-    \newline\hspace{-40pt}\textit{\csname @participant_#1\endcsname{title}}
+    \newline\textit{\csname @participant_#1\endcsname{title}}
     \checknexttalk
 }
 
@@ -161,14 +160,14 @@
 \newcommand{\plenarytalk}[3]{
 #2&\multicolumn{\numparallelsessions}{#1}{Plenary:
 \hypertarget{#3 sched}{\hyperlink{#3 titleabs}{\csname @participant_#3\endcsname{name}}}
-\newline\hspace{-40pt}\textit{\csname @participant_#3\endcsname{title}}}\\
+\newline\textit{\csname @participant_#3\endcsname{title}}}\\
 \hline
 }
 
-\newcommand{\talk}[2]{
-#1&\hypertarget{#2 sched}{\hyperlink{#2 titleabs}{\csname @participant_#2\endcsname{name}}}
-\newline\hspace{-40pt}\textit{\csname @participant_#2\endcsname{title}}\\
-\hline
+\newcommand{\talk}[2]{%
+#1&\ignorespaces\hypertarget{#2 sched}{\hyperlink{#2 titleabs}{\csname @participant_#2\endcsname{name}}}%
+\newline\ignorespaces\textit{\csname @participant_#2\endcsname{title}}\\%
+\hline%
 }
 
 
