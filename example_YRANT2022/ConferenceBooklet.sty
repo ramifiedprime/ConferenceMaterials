@@ -1,11 +1,6 @@
 % Written by Ross Paterson, who claims no responsibility for failure.
 % Comments/bugs can be reported to: rosspatersonmath@gmail.com
 % -------------------------------------------------------------
-% Necessary counters for program
-
-\newcounter{numparallelsessions}
-\newcounter{realtotalcols}
-\newcounter{totalcols}
 
 % -------------------------------------------------------------
 % Preliminary data setup
@@ -40,6 +35,9 @@
     \vskip 4em
     \ifthenelse{\equal{\@hostlogo}{}}{}{\@hostlogo}
     \vfill
+    \ifthenelse{\equal{\@institution}{}}{}{
+        \Large \@institution\\\vspace{20pt}
+    }
     \ifthenelse{\equal{\@conferencedates}{}}{}{
         \Large Date: \@conferencedates\\\vspace{20pt}
     }
@@ -144,32 +142,33 @@
 % second is an integer which is the width of the cols for that in cm
 \newenvironment{scheduleday}[2]{%
     %Counters
-    \setcounter{totalcols}{#1}\stepcounter{totalcols}%
-    \setcounter{realtotalcols}{#1}\stepcounter{realtotalcols}\stepcounter{realtotalcols}%
+    \newcommand{\@totalcols}{\the\numexpr#1+1\relax}%
+    % \setcounter{totalcols}{#1}\stepcounter{totalcols}%
+    \newcommand{\realtotalcols}{\the\numexpr#1+2\relax}%
     % User Commands
     \newcommand{\BreakInSchedule}[2]{%
         \rowcolor{gray!25}%
-        ##1&\multicolumn{\value{totalcols}}{c|}{\centering\bfseries\ignorespaces##2}\\\hline%
+        ##1&\multicolumn{\@totalcols}{c|}{\centering\bfseries\ignorespaces##2}\\\hline%
     }%
     \newcommand{\ParallelTalks}[2]{%
         \@TimeEntry{##1}\@ExpandParallelTalks{##2}%
     }%
     \newcommand{\Talk}[3][]{%
         \@TimeEntry{##2}%
-        &\multicolumn{\value{totalcols}}{m{\the\numexpr#1*#2\relax}|}{%
+        &\multicolumn{\@totalcols}{m{\the\numexpr#1*#2\relax}|}{%
             \centering\ifthenelse{\equal{##1}{}}{\@TalkName{##3}}{##1: \@TalkName{##3}}%
         }\\%
-        &\multicolumn{\value{totalcols}}{m{\the\numexpr#1*#2\relax}|}{\centering\@TalkTitle{##3}}\\%
+        &\multicolumn{\@totalcols}{m{\the\numexpr#1*#2\relax}|}{\centering\@TalkTitle{##3}}\\%
         \hline%
     }%
     \newcommand{\CrossSession}[3]{%
         \@TimeEntry{##1}%
-            &\multicolumn{\value{totalcols}}{m{\the\numexpr#1*#2\relax}|}{\centering##2}\\%
-            &\multicolumn{\value{totalcols}}{m{\the\numexpr#1*#2\relax}|}{\centering##3}\\%
+            &\multicolumn{\@totalcols}{m{\the\numexpr#1*#2\relax}|}{\centering##2}\\%
+            &\multicolumn{\@totalcols}{m{\the\numexpr#1*#2\relax}|}{\centering##3}\\%
         \hline%
     }%
     \newcommand{\Day}[1]{%
-        \rowcolor{gray!25}\multicolumn{\value{realtotalcols}}{|c|}{\textit{##1}}\\\hline%
+        \rowcolor{gray!25}\multicolumn{\realtotalcols}{|c|}{\textit{##1}}\\\hline%
     }%
     %
     %

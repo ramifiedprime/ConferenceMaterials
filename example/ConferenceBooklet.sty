@@ -35,6 +35,9 @@
     \vskip 4em
     \ifthenelse{\equal{\@hostlogo}{}}{}{\@hostlogo}
     \vfill
+    \ifthenelse{\equal{\@institution}{}}{}{
+        \Large \@institution\\\vspace{20pt}
+    }
     \ifthenelse{\equal{\@conferencedates}{}}{}{
         \Large Date: \@conferencedates\\\vspace{20pt}
     }
@@ -196,7 +199,7 @@
                 \hyperlink{#1 sched}{
                     {\Large\texttt{\csname @participant_#1\endcsname{name}}}
                 }
-            }#
+            }
             \\\textit{\csname @participant_#1\endcsname{title}}
         \end{center}
         \texttt{Abstract:}\csname @participant_#1\endcsname{abstract}

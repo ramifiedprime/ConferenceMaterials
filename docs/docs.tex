@@ -1,0 +1,100 @@
+\documentclass{amsart}
+\usepackage[margin=0.5in]{geometry}
+\begin{document}
+
+This is a very short blurb on the document classes in this repository.
+
+\section{Keys}
+The main practical value to these classes is the key-value style taken.  The user associates to a key data like names, institutions, email addresses, titles, and abstracts.  This data can then easily be recalled when it is needed throughout the document, sometimes in more than one place, simply by accessing the key.
+
+The main commands for initialising the data are:
+\begin{itemize}
+    \item \verb|\newparticipant{<key>}{<forename>}{<surname>}{<institution>}{<email>}|
+
+    Creates the inaccessible command \verb|\@participant_<key>|, which takes in one argument (call it \verb|<arg>|) and:
+    \begin{itemize}
+        \item if \verb|<arg>| is ``name'' then returns \verb|<forename>| \verb|<surname>|;
+        \item if \verb|<arg>| is ``institution'' then returns \verb|<institution>|;
+        \item if \verb|<arg>| is ``email'' then returns \verb|<email>|.
+    \end{itemize}
+    \item \verb|\newspeaker{<key>}{<forename>}{<surname>}{<institution>}{<email>}{<title>}{<abstract>}|
+
+    Creates the inaccessible command \verb|\@participant_<key>|, which takes in one argument (call it \verb|<arg>|) and:
+    \begin{itemize}
+        \item if \verb|<arg>| is ``name'' then returns \verb|<forename>| \verb|<surname>|;
+        \item if \verb|<arg>| is ``institution'' then returns \verb|<institution>|;
+        \item if \verb|<arg>| is ``email'' then returns \verb|<email>|;
+        \item if \verb|<arg>| is ``title'' then returns \verb|<title>|;
+        \item if \verb|<arg>| is ``abstract'' then returns \verb|<abstract>|.
+    \end{itemize}
+\end{itemize}
+
+This key-value process is made useful later in both classes.
+
+\section{ConferenceBooklet}
+ConferenceBooklet is intended for making...conference booklets.
+\subsection{Setup}
+There are a number of initial commands which will change your title page behaviour.
+\begin{itemize}
+    \item \verb|\sethostlogo{<arg>}|
+
+    Prints \verb|<arg>| in the host logo space on the front page.
+    \item \verb|\setfunderlogos{<arg>}|
+
+    Prints \verb|<arg>| in the funder logo block space on the front page.
+    \item \verb|\setorganisers{<arg>}|
+
+    Prints \verb|<arg>| in the organiser names space on the front page.
+    \item \verb|\setconferencename{<arg>}|
+
+    Prints \verb|<arg>| in the conference name space on the front page.
+    \item \verb|\setinstitution{<arg>}|
+
+    Prints \verb|<arg>| in the host institution space on the front page.
+    \item \verb|\setconferencedates{<arg>}|
+
+    Prints \verb|<arg>| in the dates space on the front page.
+\end{itemize}
+
+\subsection{Usage} The main environments for this class are below, they make use of the key-value system above.
+\begin{itemize}
+    \item \verb|\begin{scheduleday}{<n>}{<width>} ... \end{scheduleday}|
+
+    Starts a table to be used for the schedule.  This table will have \verb|<n>|+1 columns (the n is the number of parallel sessions running).  \verb|<width>| is the width (in integer multiples of pt or cm) of the columns for the (potentially parallel) session(s), that is, the final n columns of the table.  Within this environment there are a number of commands to make use of.
+    \begin{itemize}
+        \item \verb|\Day{<name>}| 
+
+        This creates a header row which will span all n+1 columns, which displays \verb|<name>| in italics with a greyed background.
+        \item \verb|\BreakInSchedule{<time>}{<title>}|
+
+        This creates a row in which the first entry is \verb|<time>| and then the final n columns are spanned by one multicolumn containing \verb|<title>|.
+        \item \verb|\Talk[<extra>]{<time>}{<key>}|
+
+        This creates a row in which the first entry is \verb|<time>|.  The  final n columns are spanned by one multicolumn containing the \verb|name| and \verb|title| associated to the \verb|<key>|.  If \verb|<extra>| is specified then the name of the speaker will display as \verb|<extra>: name|, allowing the user to specify things like `Plenary', for example.
+
+        \item \verb|\ParallelTalks{<time>}{<key_1>,...,<key_n>}|
+
+        This creates a row in which the first entry is \verb|<time>|.  The  final n columns contain each of the \verb|name|'s and \verb|title|'s associated to the different keys \verb|<key_1>,...,<key_n>|.
+    \end{itemize}
+    \item \verb|\begin{participantlist}{<width_1>}{<width_2>}{<width_3>}...\end{participantlist}|
+
+    Starts a table to be used for the participant list.  This table will have 3 columns.  \verb|<width_1>| is the width of the column for names;\verb|<width_2>| is the width of the column for email addresses;\verb|<width_3>| is the width of the columns for institutions.  Within this environment there main command is below.
+    \begin{itemize}
+        \item \verb|\participant{<key>}|
+
+        Creates a row: the first entry is the \verb|name| associated to \verb|<key>|; the second is the \verb|email| associated to \verb|<key>|; the third is the \verb|institution| associated to \verb|<key>|.
+    \end{itemize}
+    \item \verb|\titleabstract{<key1>}...{<keyn>}|
+
+        Iterates through the keys input, and prints the name, title, and abstract associated to each key.
+\end{itemize}
+
+\section{NameBadges}
+
+This is a not-very-general class which will allow the user to quickly generate their name tags from the same data that was used in their conference booklet.  In particular it loads the same .sty file as ConferenceBooklet.
+        
+\subsection{Setup}
+The setup is identical to ConferenceBooklet.
+\subsection{Commands}
+The main command is \verb|\nametag{<key>}| which takes in a key and produces a name tag (as in the example folder) with the name and institution of the participant associated to the key, as well as displaying the name, host institution and date of the conference and some logos for funders and the host institution.
+\end{document}
