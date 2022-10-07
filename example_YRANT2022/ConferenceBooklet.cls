@@ -13,7 +13,7 @@
 
 \RequirePackage{amsthm}
 \RequirePackage{amsmath}
-\RequirePackage{makecell}
+% \RequirePackage{makecell}
 \RequirePackage{longtable}
 \RequirePackage{graphicx}
 \RequirePackage[]{hyperref}
@@ -21,6 +21,7 @@
 \RequirePackage{ifthen}
 \RequirePackage{etoolbox}
 \RequirePackage{ConferenceBooklet}
+\RequirePackage{multirow}
 
 % ---------------------------------------------------------------------------
 % \DeclareOption{OPTION}{
