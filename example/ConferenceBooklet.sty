@@ -4,7 +4,7 @@
 % Necessary counters for program
 
 \newcounter{numparallelsessions}
-\newcounter{totalwidth}
+\newcounter{realtotalcols}
 \newcounter{totalcols}
 
 % -------------------------------------------------------------
@@ -119,67 +119,69 @@
 
 
 % -------------------------------------------------------------
-% Schedule tables setup
-\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-% The environment used for a day schedule
-\newenvironment{scheduleday}[2]{
-    \def\numparallelsessions{#1}
-    \setcounter{totalcols}{#1}
-    \stepcounter{totalcols}
-    \begin{table}[ht]
-    \begin{tabular}{#2}
-    \hline
-}{
-    \end{tabular}
-    \end{table}
-}
-
-
-% Timetable conference break row
-\newcommand{\BreakInSchedule}[2]{\rowcolor{gray!25}#1&\multicolumn{\numparallelsessions}{c|}{\bfseries #2}\\\hline}
-
-\newcommand{\paralleltalks}[2]{
-    #1&\ignorespaces\hypertarget{#2 sched}%
-                {\hyperlink{#2 titleabs}{\csname @participant_#2\endcsname{name}}}
-    \newline\textit{\csname @participant_#2\endcsname{title}}
-    \checknexttalk
-}
-
-\newcommand{\donexttalk}[1]{
-    &\ignorespaces\hypertarget{#1 sched}
-                  {\hyperlink{#1 titleabs}{\csname @participant_#1\endcsname{name}}}
-    \newline\textit{\csname @participant_#1\endcsname{title}}
-    \checknexttalk
-}
-
-\newcommand{\checknexttalk}{\@ifnextchar\bgroup{\donexttalk}{\\\hline}}
-
-
-
-%For a plenary talk
-\newcommand{\plenarytalk}[3]{
-#2&\multicolumn{\numparallelsessions}{#1}{Plenary:
-\hypertarget{#3 sched}{\hyperlink{#3 titleabs}{\csname @participant_#3\endcsname{name}}}
-\newline\textit{\csname @participant_#3\endcsname{title}}}\\
-\hline
-}
-
-\newcommand{\talk}[2]{%
-#1&\ignorespaces\hypertarget{#2 sched}{\hyperlink{#2 titleabs}{\csname @participant_#2\endcsname{name}}}%
-\newline\ignorespaces\textit{\csname @participant_#2\endcsname{title}}\\%
-\hline%
-}
-
-
-%For a plenary-type session
-\newcommand{\crosssession}[3]{
-#2&\multicolumn{\numparallelsessions}{#1}{#3}\\
-\hline
-}
-
-
-\newcommand{\dayrow}[1]{\rowcolor{gray!25}\multicolumn{\value{totalcols}}{|C{14.4cm}|}{\textit{#1}}\\\hline}
-
+% Backend for talks and parallelling
+\newcommand{\@TimeEntry}[2][2]{\multirow{#1}{*}{\centering#2}}%
+\newcommand{\@TalkName}[1]{%
+    \ignorespaces\hypertarget{#1 sched}{\hyperlink{#1 titleabs}{\csname @participant_#1\endcsname{name}}}%
+}%
+\newcommand{\@TalkTitle}[1]{\expandafter%
+    \textit{\csname @participant_#1\endcsname{title}}%
+}%
+\newcommand{\@ParallelTalkName}[1]{%
+    &\centering\@TalkName{#1}%
+}%
+\newcommand{\@ParallelTalkTitle}[1]{%
+    &\centering\@TalkTitle{#1}
+}%
+\newcommand{\@ExpandParallelTalks}[1]{%
+    \forcsvlist{\@ParallelTalkName}{#1}&\\%
+    \forcsvlist{\@ParallelTalkTitle}{#1}&\\
+    \hline%
+}%
+% The environment used for a day schedule.
+% Input:
+% First is the number of parallel sessions to have cols made for
+% second is an integer which is the width of the cols for that in cm
+\newenvironment{scheduleday}[2]{%
+    %Counters
+    \setcounter{totalcols}{#1}\stepcounter{totalcols}%
+    \setcounter{realtotalcols}{#1}\stepcounter{realtotalcols}\stepcounter{realtotalcols}%
+    % User Commands
+    \newcommand{\BreakInSchedule}[2]{%
+        \rowcolor{gray!25}%
+        ##1&\multicolumn{\value{totalcols}}{c|}{\centering\bfseries\ignorespaces##2}\\\hline%
+    }%
+    \newcommand{\ParallelTalks}[2]{%
+        \@TimeEntry{##1}\@ExpandParallelTalks{##2}%
+    }%
+    \newcommand{\Talk}[3][]{%
+        \@TimeEntry{##2}%
+        &\multicolumn{\value{totalcols}}{m{\the\numexpr#1*#2\relax}|}{%
+            \centering\ifthenelse{\equal{##1}{}}{\@TalkName{##3}}{##1: \@TalkName{##3}}%
+        }\\%
+        &\multicolumn{\value{totalcols}}{m{\the\numexpr#1*#2\relax}|}{\centering\@TalkTitle{##3}}\\%
+        \hline%
+    }%
+    \newcommand{\CrossSession}[3]{%
+        \@TimeEntry{##1}%
+            &\multicolumn{\value{totalcols}}{m{\the\numexpr#1*#2\relax}|}{\centering##2}\\%
+            &\multicolumn{\value{totalcols}}{m{\the\numexpr#1*#2\relax}|}{\centering##3}\\%
+        \hline%
+    }%
+    \newcommand{\Day}[1]{%
+        \rowcolor{gray!25}\multicolumn{\value{realtotalcols}}{|c|}{\textit{##1}}\\\hline%
+    }%
+    %
+    %
+    %
+    %
+    \begin{table}[ht]%
+    \begin{tabular}{|m{2.5cm}*{#1}{|m{#2}}m{0cm}|}%
+    \hline%
+}{%
+    \end{tabular}%
+    \end{table}%
+}%
 % -------------------------------------------------------------
 % Titles and abstract setup
 
@@ -199,15 +201,13 @@
                     {\Large\texttt{\csname @participant_#1\endcsname{name}}}
                 }
             }
-            \\\hspace{-28pt}\textit{\csname @participant_#1\endcsname{title}}
+            \\\textit{\csname @participant_#1\endcsname{title}}
         \end{center}
         \texttt{Abstract:}\csname @participant_#1\endcsname{abstract}
 }
 
 % -------------------------------------------------------------
 % participant list
-
-
 \newcommand{\participant}[1]{\\\ignorespaces\csname @participant_#1\endcsname{name}
     &\ignorespaces\csname @participant_#1\endcsname{email}
     &\ignorespaces\csname @participant_#1\endcsname{institution}
