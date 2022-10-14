@@ -27,9 +27,9 @@
 %
 % now what do you like to put in your ticket
 \newcommand{\nametag}[1]{\ticket{%
-    \put(30, 30){\makebox(10,10){\bfseries\Large\ignorespaces%
+    \put(30, 30){\makebox(20,10){\bfseries\Large\ignorespaces%
     \csname @participant_#1\endcsname{name}}}%
-    \put(30, 22){\makebox(10,10){\ignorespaces%
+    \put(30, 22){\makebox(20,10){\ignorespaces%
     \csname @participant_#1\endcsname{institution}}}%
 }}%
 %
