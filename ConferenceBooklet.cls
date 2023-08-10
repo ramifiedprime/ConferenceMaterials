@@ -16,7 +16,7 @@
 % \RequirePackage{makecell}
 \RequirePackage{longtable}
 \RequirePackage{graphicx}
-\RequirePackage[]{hyperref}
+\RequirePackage[hidelinks]{hyperref}
 \RequirePackage{environ}
 \RequirePackage{ifthen}
 \RequirePackage{etoolbox}

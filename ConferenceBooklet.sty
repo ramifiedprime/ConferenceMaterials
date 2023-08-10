@@ -3,6 +3,10 @@
 % -------------------------------------------------------------
 
 % -------------------------------------------------------------
+% No section numbering as standard
+
+
+% -------------------------------------------------------------
 % Preliminary data setup
 \makeatletter
 \def\@initialisevar#1{
@@ -13,7 +17,7 @@
 }
 \def\@initialisevars{\forcsvlist{\@initialisevar}}
 
-\@initialisevars{hostlogo,funderlogos,organisers,conferencename,institution,conferencedates}
+\@initialisevars{hostlogo,funderlogos,organisers,conferencename,institution,conferencedates,purpose}
 
 % -------------------------------------------------------------
 % Titlepage setup
@@ -29,7 +33,7 @@
     {
       {\rule{\textwidth}{2pt}}
       \huge\bfseries \@conferencename\\
-      Conference Booklet\\
+      \ifthenelse{\equal{\@purpose}{}}{}{\@purpose\\}
       {\rule{\textwidth}{2pt}}
     }
     \vskip 4em
@@ -113,9 +117,6 @@
 }%
 
 
-
-
-
 % -------------------------------------------------------------
 % Backend for talks and parallelling
 \newcommand{\@TimeEntry}[2][2]{\multirow{#1}{*}{\centering#2}}%
@@ -175,12 +176,36 @@
     %
     %
     \begin{table}[ht]%
-    \begin{tabular}{|m{2.5cm}*{#1}{|m{#2}}m{0cm}|}%
+    \begin{tabular}{|m{2cm}*{#1}{|m{#2}}m{0cm}|}%
     \hline%
 }{%
     \end{tabular}%
     \end{table}%
 }%
+
+
+% The environment used for a week schedule.
+% Input:
+% First is the number of parallel sessions to have cols made for
+% second is an integer which is the width of the cols for that in cm
+\newenvironment{scheduleweek}[2]{%
+    %Counters
+    \newcommand{\@totalcols}{\the\numexpr#1+1\relax}%
+    % \setcounter{totalcols}{#1}\stepcounter{totalcols}%
+    \newcommand{\realtotalcols}{\the\numexpr#1+2\relax}%
+    % User Commands
+    \newcommand{\Talk}[1]{\forcsvlist{&\centering \@TalkName}{##1}}%
+    \newcommand{\Break}[1]{\forcsvlist{&\cellcolor{gray!25}\centering }{##1}}
+    \newcommand{\Time}[1]{\cellcolor{gray!25}\centering ##1}
+    %
+    \begin{table}[ht]%
+    \begin{tabular}{|m{2cm}*{#1}{|m{#2}}m{0cm}|}%
+    \hline%
+}{%
+    \end{tabular}%
+    \end{table}%
+}%
+
 % -------------------------------------------------------------
 % Titles and abstract setup
 
@@ -206,7 +231,7 @@
 }
 
 % -------------------------------------------------------------
-% participant list
+% Participant list
 \newcommand{\participant}[1]{\\\ignorespaces\csname @participant_#1\endcsname{name}
     &\ignorespaces\csname @participant_#1\endcsname{email}
     &\ignorespaces\csname @participant_#1\endcsname{institution}
@@ -221,5 +246,26 @@
 }
 
 
+% -------------------------------------------------------------
+% If adding a project list:
+% Redefined figure list to be the project list, using tocloft
+% or similar to do this properly clashes with amsart.
+\newcommand{\listofprojects}{\listoffigures}
+\newcommand{\listofprojectsname}{Projects}
+\renewcommand{\listfigurename}{\listofprojectsname}
+\newenvironment{project}[2]{%
+    % \vspace{20pt}
+    \phantomsection
+    \addcontentsline{lof}{section}{\protect#2\protect\newline\textit{#1}\dotfill}
+    \begin{center}
+    \textbf{#2}
 
-\makeatother
+    \textit{#1}
+    \end{center}
+    \let\oldaddcontentsline\addcontentsline % prevent adding anything to toc
+    \renewcommand{\addcontentsline}[3]{}% prevent adding anything to toc
+}{
+    \let\addcontentsline\oldaddcontentsline % Allow adding to toc again
+}
+\newcommand{\projdiv}[1]{\vspace{10pt}\noindent{\textbf{#1:}}}
+\newcommand{\projsubdiv}[1]{\vspace{10pt}\noindent{\textit{#1:}}}
